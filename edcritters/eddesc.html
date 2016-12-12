@@ -1,0 +1,502 @@
+<HTML>  
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0 Mac">
+  <TITLE>Description</TITLE>
+</HEAD>
+<BODY TEXT="#cccccc" BGCOLOR="#000000" LINK="#ffff00" ALINK="#ffff00"
+VLINK="#ffff00">
+
+<P><CENTER><FONT COLOR="#ffff00" SIZE="+4" FACE="Trebuchet MS">AGENTMODELER.ORG</FONT></CENTER></P>
+
+<P><CENTER><script type="text/javascript"><!--
+document.write('<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;' + '&#108;&#97;&#116;&#104;&#97;&#109;@' + '&#97;&#103;&#101;&#110;&#116;&#109;&#111;&#100;&#101;&#108;&#101;&#114;&#46;&#111;&#114;&#103;' + '">' + '&#108;&#97;&#116;&#104;&#97;&#109;&#64;&#97;&#103;&#101;&#110;&#116;&#109;&#111;&#100;&#101;&#108;&#101;&#114;&#46;&#111;&#114;&#103;' + '</a>');
+// --></script></CENTER></P>
+
+<P ALIGN=RIGHT><A HREF="/index.html">HOME</A> - <A HREF="/edcritters/edcritters.html">CRITTERS</A></P>
+
+<P><FONT COLOR="#00ff00" SIZE="+3">Description</FONT><FONT SIZE="+3"><HR ALIGN=LEFT
+SIZE="5"><BR>
+<BR>
+</FONT>Critters! Version 2.0 &copy;2012<BR>
+Read Me! File - Updated 2/20/06 &copy;2012</P>
+
+<P>I. SYSTEM REQUIREMENTS (Apple Macintosh)<BR>
+A. Apple PowerMac (400 MHz G4 or better recommended)<BR>
+B. Mac OS 10.x.x (OS 10.4.4 recommended)<BR>
+C. 50 MB free Hard Drive space<BR>
+D. 100 MB free RAM</P>
+
+<P>I. SYSTEM REQUIREMENTS (Microsoft Windows)<BR>
+A. Pentium-class PC (400 MHz P4 or better recommended)<BR>
+B. Microsoft Windows XP (with latest Service Packs)<BR>
+C. 50 MB free Hard Drive space<BR>
+D. 100 MB free RAM</P>
+
+<P>&nbsp;</P>
+
+<P>II. PROGRAM DESCRIPTION<BR>
+Critters! is a 2D simulation of virtual organisms for the study
+of mutation, selection, resource supply, and fitness. Critters
+are born, acquire resources, grow, mate, reproduce, and die in
+a virtual world. Students of evolutionary biology can study allele
+frequencies and/or individual fitness by analyzing the results
+of simulations.</P>
+
+<P>III. MODEL PARAMETERS/DESIGN<BR>
+A. General<BR>
+1. A clock runs continuously in the model. There are two time
+units: clock ticks and clock units. A clock tick is the smallest
+unit of time; each critter can commit one action in a clock tick
+(e.g., birth, take a step, turn, mate, consume a resource, or
+die). A clock unit is 100 clock ticks. In the overlay display,
+whole numbers in the clock readout are clock units, while the
+decimal portion of the number is clock ticks.<BR>
+2. Individuals move on a 2D field.<BR>
+3. Spatial structure (blocks) are on the field that critters can't
+see through or move through.<BR>
+4. Three types of resources are on the field to support critters'
+growth and metabolism (STR, structural resource, markers on the
+field are 5, 10, and 15 units; SHT, short-term energy resource,
+markers on the field are 5, 10, and 15 units; LNG, long-term energy
+resource, markers on the field are 1, 2, and 3 units). The required
+amount of SHT to reach the next size class when growing is double
+the amount required for the previous size class. The required
+amount of STR is the cube of the size class.</P>
+
+<PRE>Growth Requirements for Each Size Class
+Size  STR   SHT   LNG
+1     1     1     0
+2     8     2     0
+3     27    4     0
+4     64    8     0
+5     125   16    0
+6     216   32    0
+7     343   64    0
+8     512   128   0
+9     729   256   0
+10    1000  512   0</PRE>
+
+<P>&nbsp;</P>
+
+<P>5. The capacity for STR and SHT is the total of (1) the amount
+needed to reach the next size class, and (2) the amount needed
+to lay 10 eggs at the maximum investment level times the size
+class (i.e., the capacity of egg laying climbs by a factor of
+10 for each size class). The capacity for LNG is the amount needed
+to lay 10 eggs at the maximum investment level times the size
+class plus 1 unit.</P>
+
+<PRE>Limit on Capacity for Each Size Class
+Size  STR   SHT   LNG
+1     278   278   61
+2     567   567   121
+3     874   874   181
+4     1205  1205  241
+5     1566  1566  301
+6     1963  1963  361
+7     2402  2402  421
+8     2889  2889  481
+9     3430  3430  541
+10    2700  2700  601</PRE>
+
+<P>6. Consumed resources are resupplied at each clock unit (100
+clock ticks). The resupplied resources are randomly placed on
+the field. The user can change the frequency of resource resupply
+in the interface.<BR>
+7. Traits: Egg hatching period (0-10 clock units+1 clock unit
+per egg investment of STR resource), sensing range (10-200 pixels
+for resource sensing, double that distance for mate sensing in
+males), adult size (1-10), speed limit (1-10), color (red, green,
+and blue genes), gender (male or female), egg investment, fertility
+trigger (females only; 5-20 clock units after reaching adult size),
+turning trigger (0-10% chance when no attractive resource is in
+the area), resource attractiveness alleles for all nine resources
+(0-10 for each resource type/size; note that the size (small=3,
+medium=6, large=9) and distance (scaled 0-10 value based upon
+the distance within the range of view) are equally considered
+in choosing the most attractive local resource), number of matings
+(1-3). All traits are additive except for gender, which is controlled
+by a single gene (heterozygotes are male).</P>
+
+<PRE>List of Traits, Number of Genes for Each Trait, and Allele Values for Traits
+                             number  number                  possible
+                             haploid diploid                 phenotypic
+    Trait                    genes   genes  allele1 allele2  range
+ 1. Egg Hatching Period      3       6      1.0     0.0      0-6
+ 2. Sensing Range            5       10     20.0    1.0      10-20
+ 3. Adult Size               5       10     1.0     0.0      1*-10
+ 4. Speed Limit              5       10     1.0     0.0      1*-10
+ 5. Color (red)              5       10     0.1     0.0      0-1&Yacute;
+ 6. Color (green)            5       10     0.1     0.0      0-1&Yacute;
+ 7. Color (blue)             5       10     0.1     0.0      0-1&Yacute;
+ 8. Gender                   1       2      1.0     2.0      m/f
+ 9. STR egg investment       3       6      5.0     1.0      6-30
+10. SHT egg investment       3       6      5.0     1.0      6-30
+11. LNG egg investment       3       6      1.0     0.0      0-6
+12. Fertility Period         5       10     2.0     0.5      5-20
+13. LNG-small attractiveness 5       10     1.0     0.0      0-10
+14. LNG-med attractiveness   5       10     1.0     0.0      0-10
+15. LNG-large attractiveness 5       10     1.0     0.0      0-10
+16. SHT-small attractiveness 5       10     1.0     0.0      0-10
+17. SHT-med attractiveness   5       10     1.0     0.0      0-10
+18. SHT-large attractiveness 5       10     1.0     0.0      0-10
+19. STR-small attractiveness 5       10     1.0     0.0      0-10
+20. STR-med attractiveness   5       10     1.0     0.0      0-10
+21. STR-large attractiveness 5       10     1.0     0.0      0-10
+22. Turning Genes            5       10     1.0     0.0      0-10
+23. # matings                3       6      0.5     0.0      1*-3
+*Note: One (1) is the minimum value of this trait. Even if all alleles are zero (0), the phenotype is set to a value of one (1). !Note: Allele frequencies shown in the 'Population Data' file is for the 'high value' allele, which is shown in this column. &Yacute;Note: Color values are always adjusted to percentages of maximum (0-1); therefore, changing the value of the alleles only changes the variation associated with color and/or the relative contributions of each color.</PRE>
+
+<P>B. Life History<BR>
+1. Critters are obligate sexual reproducing organisms.<BR>
+2. Females become fertile at a genetically-predisposed period
+(Fertility Period) following growth to adult size.<BR>
+3. Females lay as many eggs as they can at their genetically-predisposed
+investment levels (STR investment, SHT investment, LNG investment).
+The range of investment levels are: STR: 6-30 units/offspring;
+SHT: 6-30 units/offspring; LNG: 0-6 units/offspring.<BR>
+4. An egg will hatch after a period of time determined by its
+genetic-predisposition (Egg Hatching Period) and investment of
+STR resource (STR investmentl; i.e., larger eggs take longer to
+hatch).<BR>
+5. After laying eggs, a female's fertility timer starts again.
+However, females are genetically-predisposed to lay eggs 1-3 times,
+and males may mate 1-3 times (# matings). Death immediately follows
+the final mating event.<BR>
+6. Critters live for a maximum of 100 clock units, unless the
+Maximum Lifespan is changed by the user in the interface (a special
+feature of Critters!+).<BR>
+7. Mating conforms to scramble competition polygynandry.</P>
+
+<P>C. Genetics<BR>
+1. Critters carry genes on 27 haploid chromosomes (100 gene positions
+per chromosome).<BR>
+2. The phenotypic values of traits are determined by alleles,
+which come in two forms for each trait and have a numerical value
+[see allele1 and allele2 columns in Trait chart (above)]. These
+allele values are added to determine the phenotype for that trait.<BR>
+3. Meiosis occurs at gamete formation with recombination (random;
+1-3 crossover events per homologous chromosome pair).<BR>
+4. Critters' genomes mutate at gamete formation; the frequency
+depends on the user specified mutation rate, which is the approximate
+number of mutations per gamete.<BR>
+5. The mutations are simple allele conversion mutations.<BR>
+6. The alleles and gene positions are determined randomly at the
+start of an experiment. For each replicate, the gene positions
+are redistributed on the chromosomes. Therefore, for each population
+generated, the linkage groups will change.</P>
+
+<P>D. Physiology<BR>
+1. There exists a dynamic equilibrium between LNG and SHT resources.
+One SHT = 100 LNG, but there is a 10% loss in converting between
+the two types of resources.<BR>
+2. Resources are depleted proportional to size [basal cost (energy
+cost x critter size)], speed [movement (energy cost x critter
+speed)], and sensing range [distance (energy cost x sensing range)].<BR>
+3. Critters die when short-term energy (SHT) equals zero.</P>
+
+<P>E. Behavior<BR>
+1. Critters seek out and consume resources based upon the size
+of the resource, its distance, and the genetic predisposition
+for that resource type. There exist nine attractiveness traits,
+one for each type and size of resource on the field. Size, distance,
+and attractiveness are weighted about equal in determining which
+resource to approach. While moving toward an attractive resource,
+an even more attractive resource may come into view. The critter
+will alter its course to move toward the new, more attractive
+resource.<BR>
+2. If no resource is in the vicinity, critters usually take a
+step forward, but occasionally they turn &shy; the frequency of
+these turns are based upon behavior turning genes (Turning Genes,
+0-10% chance of turning per step).</P>
+
+<P>F. Mechanics<BR>
+1. User input to set up the simulation is recorded from the graphical
+user interface (GUI).<BR>
+2. The program outputs the results of simulations over time (allele
+frequencies, population sizes, reproductive rates, death rates,
+average fitness, average speed, average sensing range, average
+size, proportion of males in populations, death rates, and intrinsic
+replication rates).<BR>
+3. The program outputs the characteristics of individuals. The
+user can specify a fitness cutoff level for writing out critters
+(e.g., 0 = write out all critters, 1 = write out critters that
+laid at least 1 egg, 2 = 2 eggs laid, etc.)<BR>
+4. The model will run in graphics ON and graphics OFF modes. Graphics-off
+mode is much faster for obtaining results for analysis. Graphics-on
+mode is useful for visualization, conceptualization, and education.<BR>
+5. Non-random mating may be studied by activating a color switch
+in the interface.<BR>
+6. Migration may be studied by setting up the model to introduce
+a randomly-generated group of migrants at a specified time.<BR>
+7. Frequency-dependant selection or predator schemes may be studied
+by targeting and killing critters during the model runs using
+keyboard commands (a special feature of Critters!+).<BR>
+8. Competition may be studied by targeting and killing resources
+on the field during the model runs using keyboard commands.<BR>
+9. Bottleneck events may be simulated by specifying a time and
+percentage of the population to kill.</P>
+
+<P>IV. DATA FILES<BR>
+The model will write out an &quot;Info&quot; file, which contains
+information on the user-specified parameters. Three other data
+files are available at the conclusion of a simulation. One file
+contains the population parameters for each replicate. Another
+file contains the coefficient's of variation for the population
+parameters. The final file contains the individual parameters
+of critters at the time of death.</P>
+
+<P>In addition to the 'allele1' frequency codes listed above,
+the following labels are used in data files generated by the program.
+The metrics are calculated on the user specified Output Step (there
+is more information on setting the Output Step in the 'Program
+Operation' section below).</P>
+
+<P>N - Number of critters at the time of output.<BR>
+rR - Replication (birth) rate; the number of eggs laid per clock
+unit over the Output Step time interval.<BR>
+avFit - Average fitness; the average number of eggs laid per living
+individual (includes males and females) at the time of output.<BR>
+avSp - Average speed; the average speed of critters at the time
+of output.<BR>
+avSR - Average sensing range; the average sensing range of critters
+at the time of output.<BR>
+avSz - Average size; the average size of critters at the time
+of output.<BR>
+pMale - Proportion males; the proportion of males in the population
+at the time of output.<BR>
+dR - Death rate; the number of critters that die per clock unit
+over the Output Step time interval.<BR>
+r - Intrinsic rate of increase (the instantaneous rate of increase);
+birth rate minus death rate at the time of output.</P>
+
+<P><BR>
+V. PROGRAM OPERATION<BR>
+Double-click the application's icon to run the software.<BR>
+A. The user must accept the License Agreement for the program
+to run.</P>
+
+<P>B. The user selects the field size. The sizes available are
+1000x1000, 2000x2000, and 3000x3000. Larger field sizes will slow
+the model with graphics turned on due to the higher graphic demands.</P>
+
+<P>C. A control screen allows the user to set up the simulation(s).
+Note that an asterisk (&quot;*&quot;) below indicates the default
+value.<BR>
+1. Filename - (&quot;Sim 1&quot;*) If you run additional simulations
+in the same folder, you can use a different name in this field.
+If you leave &quot;Sim 1&quot; in this field, the program will
+overwrite the results of the previous simulation(s).<BR>
+2. Graphics - (OFF, ON*) The simulation uses OpenGL graphics to
+display the critters and their virtual world. Running with graphics
+on will enable you to see what is occurring in real time. If you
+are running a longer simulation, the program runs much faster
+with graphics turned off. When running with the graphics off,
+the Escape (esc) key will terminate the simulations.<BR>
+3. Number of Critters (200*) This is the initial population size
+of critters that will be generated for populations.<BR>
+4. Blocks? (OFF, ON*) Critters cannot see through or move through
+blocks on the field.<BR>
+5. Block Placement (Even*, Random) Only available if blocks are
+turned on. This option allows the user to request an even distribution
+of blocks on the field or random placement of blocks. If 'Even'
+is chosen, blocks are placed evenly on the field.<BR>
+6. Number of Blocks (25*) Only used if blocks are turned on and
+Block Placement is set to Random. The user can click in this edit
+field and type in the number of blocks they would like to appear
+on the field.<BR>
+7. Sim End (100*) This is the end time for simulations.<BR>
+8. Mutation Rate (0.1*) This is the mutation rate to be applied.
+The units are 'average number of mutations per gamete.' The value
+is an approximation because random number generators determine
+when to apply a mutation to a given loci and recombination tends
+to scramble the alleles on homologous chromosomes; therefore,
+the value entered here will reflect the average number of mutations
+in a gamete.<BR>
+9. Number of Replicates (1*) This is the number of simulations
+to be run. The program can handle up to 8 replicates.<BR>
+10. Energy Cost: Basal (0.001*) This is the basal energy cost
+that all critters pay each clock tick in the model. It is multiplied
+by the critter size to determine the loss of short-term energy
+units on that time step.<BR>
+11. Energy Cost: Sensing (0.000025*) This is the energy cost applied
+to the sensing range of the critter. It is multiplied by the distance
+that the critter can see and subtracted from their short-term
+energy supply.<BR>
+12. Energy Cost: Movement (0.04*) This is the energy cost of movement.
+It is multiplied by the speed of the critter and deduced from
+the short-term energy supply.<BR>
+13. Output Step (10*) The program calculates metrics and writes
+out data files as the simulation proceeds. This edit field controls
+the frequency of output. It is recommended that you start by determining
+the number of data points that you would like (number of columns
+that your spreadsheet data will occupy). Divide the length of
+simulation by the number of data points you would like, and that
+will provide you with the proper entry for the Output Step. For
+example, if you want 50 data points (a 50 column spreadsheet of
+data over time) and selected a Simulation End of 500, then you
+would set the Output Step to 10 (500/50 = 10 ). The program would
+write output every 10 clock units over the simulation period,
+which would provide you with a 50 column spreadsheet. Note that
+most spreadsheet applications will choke on datasets larger than
+250 columns, so plan accordingly.<BR>
+14. Resource Supply Rate (100*) This is the percent chance that
+resources will be resupplied on a given clock unit during the
+run. The value may range from 1 to 100. If set to 100, resources
+will be resupplied every clock unit during simulation. If set
+to 10, there is a 10% chance on each clock unit that the resources
+will be resupplied.<BR>
+15. Reports - These checkboxes allow the user to control which
+data files are produced during simulation.<BR>
+16. Fitness Cutoff for Individual Critter Output (0*) - Use this
+field to specify a cutoff value for writing out individual critter
+data during the simulations. For example, a value of 0 here will
+result in writing all of the critters' individual parameters.
+A value of 2 will result in writing only those critters that laid
+at least 2 eggs. WARNING: Critters! will generate THOUSANDS of
+individuals under long runs. If you set this value to '0' and
+write out all critters to the data files, you will end up with
+huge data files. Unless you need to know critter parameters for
+critters that laid no eggs (zero-fitness critters), then it is
+suggested that you use a value of at least 1 here (i.e., only
+record critter data if the critter laid at least one egg). Otherwise,
+you may be limited to shorter runs or resource-starved critters
+who do not lay too many eggs. If your experimental design calls
+for use of the individuals' data files, a few test runs should
+help you determine proper settings for this parameter.<BR>
+17. Resources (the defaults for 9 resource types/sizes will appear
+when program is run) These edit fields allow the user to specify
+precisely the type and number of resources in the simulations.
+The total number of resources should not exceed 1000.<BR>
+18. Migration Switch (OFF*, ON) &shy; Turns on a migrant introduction
+feature. The user specifies the number of randomly generated migrants
+to introduce and the time of their introduction.<BR>
+19. Mate Choice (Red: OFF*/ON; Green: OFF*/ON; Blue: OFF*/ON)
+&shy; Turns on color preferences by males for females. When set
+to on, males only mate with females that have a higher than average
+color value for that color. Only one of these switches can be
+set.<BR>
+20. Maximum Lifespan (100*) &shy; Critters die when they reach
+this age.<BR>
+21. Bottleneck event switch (OFF*, ON) &shy; Turns on the bottleneck
+even feature.<BR>
+22. Bottleneck time (50*) &shy; Specifies when the bottleneck
+event is to occur.<BR>
+23. Bottleneck percentage of population to kill (70*) &shy; The
+fraction of the population to kill during the bottleneck event.<BR>
+24. Migration event switch (OFF*, ON) &shy; Turns on the migration
+even feature.<BR>
+25. Migration time (50*) &shy; Specifies when the migration event
+is to occur.<BR>
+26. Number of migrants (30*) &shy; The number of randomly generated
+migrants that will enter the population at the migration time.<BR>
+27. Run Simulation - Will start the simulation(s).<BR>
+28. Exit Program - Will exit the program.</P>
+
+<P>D. Keyboard controls [only available during graphics-on simulations,
+except for Escape (esc)]<BR>
+1. Arrow keys - move forward, move back, turn left, turn right<BR>
+2. G - toggle the graphics on and off<BR>
+3. K - elevate the camera<BR>
+4. , (comma) - lower the camera<BR>
+5. L - tilt camera up<BR>
+6. . (period) - tilt camera down<BR>
+7. Escape (esc) - exit simulation<BR>
+8. P - pause the simulation [Note: Camera controls work when the
+simulation is paused (i.e., the user can move about the field
+during a paused simulation)]<BR>
+9. A - toggle the allele frequency monitor on/off<BR>
+10. W &shy; OpenGL wire frame mode (shows the polygon nature of
+3D graphics)<BR>
+11. O &shy; toggles the overlay on and off<BR>
+12. I &shy; provides a target cross-hair to get information on
+a specific critter (run the cross-hair under a critter to see
+its characteristics)<BR>
+13. T &shy; enter target mode to kill critters or resources<BR>
+14. R &shy; toggle between 'TARGET: Critter&quot; and &quot;TARGET:
+Resource&quot; modes<BR>
+15. (spacebar) &shy; kill critter/resource in the cross-hair<BR>
+16. C &shy; toggle fast and slow camera speed modes</P>
+
+<P>E. Screen Abbreviations</P>
+
+<P>FPS &shy; Frames per second<BR>
+The following data is shown as the model runs:<BR>
+Time &shy; Current time<BR>
+Rep/Total &shy; Replicate # underway/Total number of replicates
+requested<BR>
+Total New &shy; Total critters generated so far<BR>
+#Critters &shy; Number of organisms in the current population<BR>
+Avg. Fitness &shy; The average number of eggs laid per living
+individual<BR>
+Rep Rate &shy; The number of eggs laid over the output step time
+interval<BR>
+Death Rate &shy; The number of dead critters over the output step
+time interval</P>
+
+<P>The following data is shown when looking at individual critters:<BR>
+Code &shy; The unique code number of the critter marked on the
+screen<BR>
+Gender &shy; Male/female<BR>
+Age &shy; Current age<BR>
+Adult Size &shy; The adult size for this critter<BR>
+Size &shy; The current size of this critter<BR>
+Speed &shy; The speed of this critter (pixels/step)<BR>
+Color1(red) &shy; The red value for this critter (range: 0-1)<BR>
+Color2(green) &shy; The green value (0-1)<BR>
+Color3(blue) &shy; The blue value (0-1)<BR>
+SensRange &shy; The sensing (vision) range for this critter (pixels)<BR>
+FertFlag &shy; For females: 0=egg, 1=juvenile, 2=adult, non-fertile,
+3 = adult, fertile<BR>
+FertTimePer &shy; Period of time between reaching adult size and
+becoming fertile<BR>
+FertTime &shy; The actual time that an adult female will become
+fertile<BR>
+X &shy; The x coordinate of this critter<BR>
+Y &shy; The y coordinate<BR>
+Dir &shy; The direction that this critter is moving<BR>
+NumEggsLaid &shy; Number of eggs laid by this critter<BR>
+LNGunit &shy; Current number of long energy units held by this
+critter<BR>
+SHTunit &shy; Number of short energy units<BR>
+STRunit &shy; Number of structural units<BR>
+EggHatchPer &shy; The length of time for this critter to hatch<BR>
+EggHatchTime &shy; The actual time of egg hatching for this critter<BR>
+RepEvntsRem &shy; Number of mating attempts remaining for this
+critter<BR>
+ResAtt_ &shy; Resource attractiveness figures (0-10) for each
+size/type of resource<BR>
+Parent1 &shy; The critter's father code number<BR>
+Parent2 &shy; The critter's mother code number</P>
+
+<P>VI. VERSION HISTORY</P>
+
+<P>11/23/02 &shy; v.1.0 &shy; Final Release<BR>
+02/20/03 &shy; v1.1 &shy; Interface provided in one screen; numerous
+bug fixes; OpenGL enhancements<BR>
+06/15/03 &shy; v1.2 &shy; New feature: An individual's parents'
+code numbers are recorded in the individual data file, which makes
+it possible to lookup the parents' phenotypes<BR>
+01/19/04 &shy; v1.3 &shy; New features: Predator/competitor and
+critter information features added with keyboard controls; added
+'cause of death' information to the individual data files; added
+migration tool; added mate choice by color tool; added ability
+to change default maximum lifespan, added bottleneck event feature.<BR>
+03/08/04 &shy; v1.4 &shy; Changed camera controls to allow for
+z-axis elevations as high as 2000 pixels. New feature: Ability
+to run model on multiple field sizes.<BR>
+06/25/04 &shy; v1.5 &shy; Updated genetics model using floats
+and longs over strings for genetic trait codes.<BR>
+02/3/06 &shy; v2.0 PC version complete.</P>
+
+<P><BR>
+</P>
+
+<P><FONT SIZE="+1"><HR ALIGN=LEFT SIZE="5"></FONT></P>
+
+<P ALIGN=RIGHT><A HREF="/index.html">HOME</A> - <A HREF="/agent/edcritters/edcritters.html">CRITTERS</A></P>
+
+<P><CENTER>Copyright 2012</CENTER>
+
+</BODY>
+</HTML>
